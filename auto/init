@@ -2,7 +2,7 @@
 # Copyright (C) Igor Sysoev
 # Copyright (C) Nginx, Inc.
 
-
+# 定义其他文件用到的变量（have_headers, feature 等）
 NGX_MAKEFILE=$NGX_OBJS/Makefile
 NGX_MODULES_C=$NGX_OBJS/ngx_modules.c
 

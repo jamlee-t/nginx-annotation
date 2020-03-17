@@ -2,13 +2,15 @@
 # Copyright (C) Ruslan Ermilov
 # Copyright (C) Nginx, Inc.
 
+# 文件的入参为 $ngx_module_name, $ngx_module_type, $ngx_module_link, $ngx_module_srcs, $ngx_module_libs。定义 module 的类型、源码、module名字、module 顺序(order)
 
+# 如果 module 类型是 HTTP 开头的，那么它就是HTTP类型的 
 case $ngx_module_type in
     HTTP_*) ngx_var=HTTP ;;
     *)      ngx_var=$ngx_module_type ;;
 esac
 
-
+#region 对 module 进行分类
 if [ "$ngx_module_link" = DYNAMIC ]; then
 
     for ngx_module in $ngx_module_name; do
@@ -136,3 +138,4 @@ elif [ "$ngx_module_link" = ADDON ]; then
         esac
     done
 fi
+#endregion

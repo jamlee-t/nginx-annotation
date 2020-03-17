@@ -168,8 +168,10 @@ NGX_CPU_CACHE_LINE=
 
 NGX_POST_CONF_MSG=
 
+# 保存所有解析过的 opt 选项
 opt=
 
+#region config 选项
 for option
 do
     opt="$opt `echo $option | sed -e \"s/\(--[^=]*=\)\(.* .*\)/\1'\2'/\"`"
@@ -401,11 +403,12 @@ $0: warning: the \"--with-sha1-asm\" option is deprecated"
         ;;
     esac
 done
+#endregion
 
-
+# 已经解析的 opt 选项
 NGX_CONFIGURE="$opt"
 
-
+#region help 帮助信息
 if [ $help = yes ]; then
 
 cat << END
@@ -587,8 +590,9 @@ END
 
     exit 1
 fi
+#endregion
 
-
+# 如果是 windows 平台
 if [ ".$NGX_PLATFORM" = ".win32" ]; then
     NGX_WINE=$WINE
 fi

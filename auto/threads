@@ -1,7 +1,7 @@
 
 # Copyright (C) Nginx, Inc.
 
-
+# 是否使用线程，在 windows 上不支持。如果在Linux平台且使用线程，那么 CORE_DEPS 会添加线程的依赖
 if [ $USE_THREADS = YES ]; then
 
     if [ "$NGX_PLATFORM" = win32 ]; then

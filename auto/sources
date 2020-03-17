@@ -2,7 +2,8 @@
 # Copyright (C) Igor Sysoev
 # Copyright (C) Nginx, Inc.
 
-
+#region 分组配置基础源码
+# 核心模块有 core, errlog, conf 模块
 CORE_MODULES="ngx_core_module ngx_errlog_module ngx_conf_module"
 
 CORE_INCS="src/core"
@@ -80,7 +81,7 @@ CORE_SRCS="src/core/nginx.c \
            src/core/ngx_proxy_protocol.c \
            src/core/ngx_syslog.c"
 
-
+# 事件模块有 events, event_core 模块
 EVENT_MODULES="ngx_events_module ngx_event_core_module"
 
 EVENT_INCS="src/event src/event/modules"
@@ -99,33 +100,42 @@ EVENT_SRCS="src/event/ngx_event.c \
             src/event/ngx_event_connect.c \
             src/event/ngx_event_pipe.c"
 
-
+# 配置 select 模块源码
 SELECT_MODULE=ngx_select_module
 SELECT_SRCS=src/event/modules/ngx_select_module.c
 WIN32_SELECT_SRCS=src/event/modules/ngx_win32_select_module.c
 
+# 配置 poll 模块源码
 POLL_MODULE=ngx_poll_module
 POLL_SRCS=src/event/modules/ngx_poll_module.c
 WIN32_POLL_SRCS=src/event/modules/ngx_win32_poll_module.c
 
+# 配置 kqueue 模块源码
 KQUEUE_MODULE=ngx_kqueue_module
 KQUEUE_SRCS=src/event/modules/ngx_kqueue_module.c
 
+# 配置 devpoll 模块源码
 DEVPOLL_MODULE=ngx_devpoll_module
 DEVPOLL_SRCS=src/event/modules/ngx_devpoll_module.c
 
+# 配置 eventport 模块源码
 EVENTPORT_MODULE=ngx_eventport_module
 EVENTPORT_SRCS=src/event/modules/ngx_eventport_module.c
 
+# 配置 epoll 模块源码
 EPOLL_MODULE=ngx_epoll_module
 EPOLL_SRCS=src/event/modules/ngx_epoll_module.c
 
+# 配置 iocp 模块源码
 IOCP_MODULE=ngx_iocp_module
 IOCP_SRCS=src/event/modules/ngx_iocp_module.c
 
+# 配置 AIO 源码
 FILE_AIO_SRCS="src/os/unix/ngx_file_aio_read.c"
 LINUX_AIO_SRCS="src/os/unix/ngx_linux_aio_read.c"
+#endregion
 
+#region 类 unix 源码组织
 UNIX_INCS="$CORE_INCS $EVENT_INCS src/os/unix"
 
 UNIX_DEPS="$CORE_DEPS $EVENT_DEPS \
@@ -207,8 +217,9 @@ SOLARIS_SENDFILEV_SRCS=src/os/unix/ngx_solaris_sendfilev_chain.c
 DARWIN_DEPS="src/os/unix/ngx_darwin_config.h src/os/unix/ngx_darwin.h"
 DARWIN_SRCS=src/os/unix/ngx_darwin_init.c
 DARWIN_SENDFILE_SRCS=src/os/unix/ngx_darwin_sendfile_chain.c
+#endregion
 
-
+#region Windows 源码组织
 WIN32_INCS="$CORE_INCS $EVENT_INCS src/os/win32"
 
 WIN32_DEPS="$CORE_DEPS $EVENT_DEPS \
@@ -252,6 +263,6 @@ WIN32_SRCS="$CORE_SRCS $EVENT_SRCS \
 
 NGX_WIN32_ICONS="src/os/win32/nginx.ico"
 NGX_WIN32_RC="src/os/win32/nginx.rc"
-
+#endregion
 
 HTTP_FILE_CACHE_SRCS=src/http/ngx_http_file_cache.c

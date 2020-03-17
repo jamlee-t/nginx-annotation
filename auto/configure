@@ -7,15 +7,20 @@
 LC_ALL=C
 export LC_ALL
 
+# 初始化变量，定义了 CORE 的文件以及初始化的配置参数
 . auto/options
 . auto/init
 . auto/sources
+# 执行至此，Makefile 仅仅书写了 clean 和 default
+
 
 test -d $NGX_OBJS || mkdir -p $NGX_OBJS
 
+# 头文件清空
 echo > $NGX_AUTO_HEADERS_H
 echo > $NGX_AUTOCONF_ERR
 
+# NGX_CONFIGURE是 已经解析的所有 opt 选项
 echo "#define NGX_CONFIGURE \"$NGX_CONFIGURE\"" > $NGX_AUTO_CONFIG_H
 
 
@@ -23,7 +28,7 @@ if [ $NGX_DEBUG = YES ]; then
     have=NGX_DEBUG . auto/have
 fi
 
-
+# 检测当前的构建系统
 if test -z "$NGX_PLATFORM"; then
     echo "checking for OS"
 
@@ -46,22 +51,30 @@ else
     NGX_SYSTEM=$NGX_PLATFORM
 fi
 
+# 定义编译器变量， 使用了 . auto/feature 进行检测
 . auto/cc/conf
 
+# unix 的头文件需要引入
 if [ "$NGX_PLATFORM" != win32 ]; then
     . auto/headers
 fi
 
+# 检测了系统特性 . auto/os/linux
 . auto/os/conf
 
+# 检测 unix 用户组
 if [ "$NGX_PLATFORM" != win32 ]; then
     . auto/unix
 fi
 
+# 未开启 thread 不深究
 . auto/threads
+# 定义module
 . auto/modules
+# 未开启第三方插件lib 不深究
 . auto/lib/conf
 
+#region 定义 nginx 的安装 宏变量
 case ".$NGX_PREFIX" in
     .)
         NGX_PREFIX=${NGX_PREFIX:-/usr/local/nginx}
@@ -98,14 +111,17 @@ have=NGX_HTTP_UWSGI_TEMP_PATH value="\"$NGX_HTTP_UWSGI_TEMP_PATH\""
 . auto/define
 have=NGX_HTTP_SCGI_TEMP_PATH value="\"$NGX_HTTP_SCGI_TEMP_PATH\""
 . auto/define
+#endregion
 
+# 生成 make 文件
 . auto/make
 . auto/lib/make
 . auto/install
 
-# STUB
+# STU, 定义两个宏
 . auto/stubs
 
+# 定义nginx的运行用户宏
 have=NGX_USER value="\"$NGX_USER\"" . auto/define
 have=NGX_GROUP value="\"$NGX_GROUP\"" . auto/define
 
@@ -113,4 +129,5 @@ if [ ".$NGX_BUILD" != "." ]; then
     have=NGX_BUILD value="\"$NGX_BUILD\"" . auto/define
 fi
 
+# 查看总结
 . auto/summary

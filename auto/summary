@@ -2,7 +2,7 @@
 # Copyright (C) Igor Sysoev
 # Copyright (C) Nginx, Inc.
 
-
+#region 根据其他文件的变量决定打开的配置信息输出
 echo
 echo "Configuration summary"
 
@@ -78,5 +78,7 @@ fi
 if [ $HTTP_SCGI = YES ]; then
     echo "  nginx http scgi temporary files: \"$NGX_HTTP_SCGI_TEMP_PATH\""
 fi
+#endregion
 
+# 输出保存的配置信息
 echo "$NGX_POST_CONF_MSG"

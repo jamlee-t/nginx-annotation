@@ -2,7 +2,7 @@
 # Copyright (C) Igor Sysoev
 # Copyright (C) Nginx, Inc.
 
-
+# 通过宏关闭某些功能
 cat << END >> $NGX_AUTO_CONFIG_H
 
 #ifndef $have
