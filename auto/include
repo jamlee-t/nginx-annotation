@@ -2,9 +2,13 @@
 # Copyright (C) Igor Sysoev
 # Copyright (C) Nginx, Inc.
 
+# $ngx_n, $ngx_c 为输入给这个文件的变量
 
-echo $ngx_n "checking for $ngx_include ...$ngx_c"
 
+# 输出检查头文件的信息
+echo $ngx_n "checking header for $ngx_include ...$ngx_c"
+
+# 将测试数据输入到日志文件
 cat << END >> $NGX_AUTOCONF_ERR
 
 ----------------------------------------
@@ -26,11 +30,12 @@ int main(void) {
 
 END
 
-
+# 测试头文件
 ngx_test="$CC -o $NGX_AUTOTEST $NGX_AUTOTEST.c"
 
 eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&1"
 
+# NGX_AUTOTEST 是编译完成的文件名
 if [ -x $NGX_AUTOTEST ]; then
 
     ngx_found=yes
@@ -46,6 +51,7 @@ if [ -x $NGX_AUTOTEST ]; then
     eval "NGX_INCLUDE_$ngx_name='#include <$ngx_include>'"
 
 else
+    # 为编译成功， 添加到错误文件中
     echo " not found"
 
     echo "----------"    >> $NGX_AUTOCONF_ERR
@@ -55,4 +61,5 @@ else
     echo "----------"    >> $NGX_AUTOCONF_ERR
 fi
 
+# 清理文件
 rm -rf $NGX_AUTOTEST*

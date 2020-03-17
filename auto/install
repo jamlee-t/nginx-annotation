@@ -2,7 +2,7 @@
 # Copyright (C) Igor Sysoev
 # Copyright (C) Nginx, Inc.
 
-
+# 生成 Makefile
 if [ $USE_PERL != NO ]; then
 
     cat << END                                                >> $NGX_MAKEFILE
@@ -193,7 +193,7 @@ END
 
 done
 
-
+# 完成外层Makefile下半部分
 # create Makefile
 
 cat << END >> Makefile

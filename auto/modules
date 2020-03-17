@@ -2,7 +2,12 @@
 # Copyright (C) Igor Sysoev
 # Copyright (C) Nginx, Inc.
 
+# 本文件入参:
+# $NGX_MODULES_C: module 的 c 文件名
+# $NGX_PRAGMA: PRAGMA 宏配置
 
+
+#region 事件库的选择
 if [ $EVENT_SELECT = NO -a $EVENT_FOUND = NO ]; then
     EVENT_SELECT=YES
 fi
@@ -54,8 +59,9 @@ if [ $NGX_TEST_BUILD_SOLARIS_SENDFILEV = YES ]; then
     have=NGX_TEST_BUILD_SOLARIS_SENDFILEV . auto/have
     CORE_SRCS="$CORE_SRCS $SOLARIS_SENDFILEV_SRCS"
 fi
+#endregion
 
-
+# HTTP 默认即等于 YES(在options中)
 if [ $HTTP = YES ]; then
     HTTP_MODULES=
     HTTP_DEPS=
@@ -63,6 +69,7 @@ if [ $HTTP = YES ]; then
 
     ngx_module_type=HTTP
 
+    #region 定义默认会编译进nginx的http模块
     if :; then
         ngx_module_name="ngx_http_module \
                          ngx_http_core_module \
@@ -89,11 +96,16 @@ if [ $HTTP = YES ]; then
                          src/http/ngx_http_script.c \
                          src/http/ngx_http_upstream.c \
                          src/http/ngx_http_upstream_round_robin.c"
+        
+        # 没有依赖外部的 c 库
         ngx_module_libs=
+
+        # ngx_module_link 初步判断是静态链接的意思
         ngx_module_link=YES
 
         . auto/module
     fi
+    #endregion
 
 
     if [ $HTTP_CACHE = YES ]; then
@@ -137,6 +149,8 @@ if [ $HTTP = YES ]; then
     #     ngx_http_slice_filter
 
     ngx_module_type=HTTP_FILTER
+
+    #region 定义 nginx filter 模块
     HTTP_FILTER_MODULES=
 
     ngx_module_order="ngx_http_static_module \
@@ -399,10 +413,12 @@ if [ $HTTP = YES ]; then
 
         . auto/module
     fi
+    #endregion
 
 
     ngx_module_type=HTTP
 
+    #region 定义默认不会编译进nginx的模块
     if [ $HTTP_V2 = YES ]; then
         have=NGX_HTTP_V2 . auto/have
         have=NGX_HTTP_HEADERS . auto/have
@@ -910,6 +926,7 @@ if [ $HTTP = YES ]; then
 
         . auto/module
     fi
+    #endregion
 fi
 
 
@@ -987,13 +1004,15 @@ if [ $MAIL != NO ]; then
     . auto/module
 fi
 
-
+# STREAM 默认即等于 NO(在options中)，stream 是 tcp 模块不要和 upstream 搞混淆了
 if [ $STREAM != NO ]; then
     STREAM_MODULES=
     STREAM_DEPS=
     STREAM_INCS=
 
     ngx_module_type=STREAM
+
+    #region 定义stream模块
     ngx_module_libs=
     ngx_module_link=YES
 
@@ -1170,6 +1189,7 @@ if [ $STREAM != NO ]; then
 
         . auto/module
     fi
+    #endregion
 fi
 
 
@@ -1177,7 +1197,7 @@ fi
 #    . $NGX_OBJS/auto
 #fi
 
-
+#region 额外的外部模块，先不予深究
 if test -n "$NGX_ADDONS"; then
 
     echo configuring additional modules
@@ -1265,8 +1285,9 @@ if [ $USE_PCRE = YES ]; then
 
     . auto/module
 fi
+#endregion
 
-
+# 核心模块也是模块，遵循模块的组织方式
 modules="$CORE_MODULES $EVENT_MODULES"
 
 
@@ -1275,7 +1296,7 @@ if [ $USE_THREADS = YES ]; then
     modules="$modules $THREAD_POOL_MODULE"
 fi
 
-
+# 最终收集 HTTP modules, 得到 modules 变量
 if [ $HTTP = YES ]; then
     modules="$modules $HTTP_MODULES $HTTP_FILTER_MODULES \
              $HTTP_AUX_FILTER_MODULES $HTTP_INIT_FILTER_MODULES"
@@ -1303,7 +1324,7 @@ if [ $MAIL != NO ]; then
     NGX_ADDON_DEPS="$NGX_ADDON_DEPS \$(MAIL_DEPS)"
 fi
 
-
+# 最终收集 Stream modules
 if [ $STREAM != NO ]; then
 
     if [ $STREAM = YES ]; then
@@ -1325,6 +1346,7 @@ fi
 
 
 ngx_module_type=MISC
+#region 定义混合模块，暂时不用深究
 MISC_MODULES=
 
 if [ $NGX_GOOGLE_PERFTOOLS = YES ]; then
@@ -1348,10 +1370,11 @@ if [ $NGX_CPP_TEST = YES ]; then
 
     . auto/module
 fi
-
+#endregion
 modules="$modules $MISC_MODULES"
 
 
+# NGX_COMPAT默认是等于NO的
 if [ $NGX_COMPAT = YES ]; then
     have=NGX_COMPAT . auto/have
     have=NGX_HTTP_GZIP . auto/have
@@ -1364,6 +1387,7 @@ if [ $NGX_COMPAT = YES ]; then
 fi
 
 
+#region ngx_modules.c 文件生成
 cat << END                                    > $NGX_MODULES_C
 
 #include <ngx_config.h>
@@ -1373,11 +1397,13 @@ $NGX_PRAGMA
 
 END
 
+# 生成 extern module，从其他的库文件中引入进来的全局变量
 for mod in $modules
 do
     echo "extern ngx_module_t  $mod;"         >> $NGX_MODULES_C
 done
 
+# 生成module的顺序, 存储的是module的指针
 echo                                          >> $NGX_MODULES_C
 echo 'ngx_module_t *ngx_modules[] = {'        >> $NGX_MODULES_C
 
@@ -1392,6 +1418,7 @@ cat << END                                    >> $NGX_MODULES_C
 
 END
 
+# 生成module的顺序，存储的是module的名字
 echo 'char *ngx_module_names[] = {'           >> $NGX_MODULES_C
 
 for mod in $modules
@@ -1404,3 +1431,4 @@ cat << END                                    >> $NGX_MODULES_C
 };
 
 END
+#endregion

@@ -2,7 +2,7 @@
 # Copyright (C) Igor Sysoev
 # Copyright (C) Nginx, Inc.
 
-
+#region 检测用户和用户组是否存在，不存在设置成 nobody，如果用户组 nogroup 不存在，组也设置为 nogroup
 NGX_USER=${NGX_USER:-nobody}
 
 if [ -z "$NGX_GROUP" ]; then
@@ -25,7 +25,7 @@ if [ -z "$NGX_GROUP" ]; then
         NGX_GROUP=$NGX_USER
     fi
 fi
-
+#endregion
 
 ngx_feature="poll()"
 ngx_feature_name=

@@ -168,7 +168,7 @@ fi
 
 
 # nginx
-
+# 收集所有源码文件
 ngx_all_srcs=`echo $ngx_all_srcs | sed -e "s/\//$ngx_regex_dirsep/g"`
 
 for ngx_src in $NGX_ADDON_SRCS
@@ -222,6 +222,7 @@ ngx_main_link=${MAIN_LINK:+`echo $MAIN_LINK \
     | sed -e "s/\//$ngx_regex_dirsep/g" -e "s/^/$ngx_long_regex_cont/"`}
 
 
+# 默认 target 定义
 cat << END                                                    >> $NGX_MAKEFILE
 
 build:	binary modules manpage
@@ -245,6 +246,7 @@ else
     ngx_cc="\$(CC) $ngx_compile_opt \$(CFLAGS) \$(CORE_INCS)"
 fi
 
+# objs/nginx生成规则
 cat << END                                                    >> $NGX_MAKEFILE
 
 $ngx_modules_obj:	\$(CORE_DEPS)$ngx_cont$ngx_modules_c
@@ -254,7 +256,7 @@ END
 
 
 # the core sources
-
+# 所有的源码文件生成规则
 for ngx_src in $CORE_SRCS
 do
     ngx_src=`echo $ngx_src | sed -e "s/\//$ngx_regex_dirsep/g"`
@@ -488,7 +490,7 @@ END
 
 fi
 
-
+#region 动态模块 默认不深究动态模块
 # dynamic modules
 
 if test -n "$NGX_PCH"; then
@@ -670,3 +672,4 @@ END
         fi
     done
 done
+#endregion

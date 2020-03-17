@@ -2,7 +2,8 @@
 # Copyright (C) Igor Sysoev
 # Copyright (C) Nginx, Inc.
 
-
+# 定义头文件 have, 往文件里面头部定义, 被当做函数来使用
+# feature 写入 feature 的头文件， header 写入 header 的头文件
 cat << END >> $NGX_AUTO_HEADERS_H
 
 #ifndef $have
