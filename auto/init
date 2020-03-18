@@ -14,6 +14,8 @@ NGX_AUTOCONF_ERR=$NGX_OBJS/autoconf.err
 
 # STUBs
 NGX_ERR=$NGX_OBJS/autoconf.err
+
+# Makefile 有两个， OBJS里面的那个是真正干活
 MAKEFILE=$NGX_OBJS/Makefile
 
 
@@ -21,8 +23,8 @@ NGX_PCH=
 NGX_USE_PCH=
 
 
+# 设置不换行输出的方式: 有 $ngx_c $ngx_n 两个变量
 # check the echo's "-n" option and "\c" capability
-
 if echo "test\c" | grep c >/dev/null; then
 
     if echo -n test | grep n >/dev/null; then
@@ -40,8 +42,8 @@ else
 fi
 
 
+# 外层 Makefile
 # create Makefile
-
 cat << END > Makefile
 
 default:	build

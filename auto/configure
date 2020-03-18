@@ -10,9 +10,9 @@ export LC_ALL
 # 初始化变量，定义了 CORE 的文件以及初始化的配置参数
 . auto/options
 . auto/init
-. auto/sources
-# 执行至此，Makefile 仅仅书写了 clean 和 default
-
+. auto/sources # 核心的nginx文件编译文件列表
+# 执行至此，外层Makefile 仅仅书写了 clean 和 default
+# 外层的 Makefile 还有其他一些内容是在哪里生成的呢? 在 install 最后一部分完成 
 
 test -d $NGX_OBJS || mkdir -p $NGX_OBJS
 
@@ -51,7 +51,7 @@ else
     NGX_SYSTEM=$NGX_PLATFORM
 fi
 
-# 定义编译器变量， 使用了 . auto/feature 进行检测
+# 定义编译器变量、编译参数,使用了 . auto/feature 进行检测
 . auto/cc/conf
 
 # unix 的头文件需要引入
@@ -113,7 +113,7 @@ have=NGX_HTTP_SCGI_TEMP_PATH value="\"$NGX_HTTP_SCGI_TEMP_PATH\""
 . auto/define
 #endregion
 
-# 生成 make 文件
+# 生成 make 文件， $Makefile 这个变量下面应该都会有用到脚本
 . auto/make
 . auto/lib/make
 . auto/install

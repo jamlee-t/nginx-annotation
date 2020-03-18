@@ -1287,6 +1287,7 @@ if [ $USE_PCRE = YES ]; then
 fi
 #endregion
 
+# 核心模块也是模块，遵循模块的组织方式
 modules="$CORE_MODULES $EVENT_MODULES"
 
 
@@ -1295,7 +1296,7 @@ if [ $USE_THREADS = YES ]; then
     modules="$modules $THREAD_POOL_MODULE"
 fi
 
-# 最终收集 HTTP modules
+# 最终收集 HTTP modules, 得到 modules 变量
 if [ $HTTP = YES ]; then
     modules="$modules $HTTP_MODULES $HTTP_FILTER_MODULES \
              $HTTP_AUX_FILTER_MODULES $HTTP_INIT_FILTER_MODULES"
