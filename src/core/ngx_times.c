@@ -26,6 +26,8 @@ static ngx_msec_t ngx_monotonic_time(time_t sec, ngx_uint_t msec);
 static ngx_uint_t        slot;
 static ngx_atomic_t      ngx_time_lock;
 
+// 问题：
+//   1. 这些全局变量,用于获取缓存的时间, 通过全局变量对时间进行了共享
 volatile ngx_msec_t      ngx_current_msec;
 volatile ngx_time_t     *ngx_cached_time;
 volatile ngx_str_t       ngx_cached_err_log_time;
@@ -46,6 +48,11 @@ static ngx_int_t         cached_gmtoff;
 #endif
 
 static ngx_time_t        cached_time[NGX_TIME_SLOTS];
+
+
+// 下方定义的是存储字符串的数组
+// 问题:
+//   1. 用于循环数组实现读无锁，但是建64个这么大是什么用意呢？我理解两个就足够了
 static u_char            cached_err_log_time[NGX_TIME_SLOTS]
                                     [sizeof("1970/09/28 12:00:00")];
 static u_char            cached_http_time[NGX_TIME_SLOTS]

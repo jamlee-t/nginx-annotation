@@ -17,6 +17,11 @@ typedef void *            ngx_buf_tag_t;
 
 typedef struct ngx_buf_s  ngx_buf_t;
 
+// 问题:
+//  1. ngx_buf_s 看起来没有和内存池扯上关系，那么它是如何存储的呢?
+//  存储的是指针范围，指向内存，内存池是外部传入的
+// 
+// 缓冲区 ngx_buf_t 是 nginx 处理大数据的关键数据结构, 应用于内存数据也应用于磁盘数据. 更像是一个指针指向内存某个段，内存池由外部传入。
 struct ngx_buf_s {
     u_char          *pos;
     u_char          *last;
@@ -55,13 +60,13 @@ struct ngx_buf_s {
     /* STUB */ int   num;
 };
 
-
+// 一组 buf 组成的链表
 struct ngx_chain_s {
     ngx_buf_t    *buf;
     ngx_chain_t  *next;
 };
 
-
+// 创建一个 ngx_chain_s 时，作为入参
 typedef struct {
     ngx_int_t    num;
     size_t       size;

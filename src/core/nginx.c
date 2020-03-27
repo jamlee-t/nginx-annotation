@@ -207,6 +207,7 @@ main(int argc, char *const *argv)
         return 1;
     }
 
+    // 从命令参数中解析数据, 放到 static 本文件的全局变量中
     if (ngx_get_options(argc, argv) != NGX_OK) {
         return 1;
     }
@@ -221,8 +222,11 @@ main(int argc, char *const *argv)
 
     /* TODO */ ngx_max_sockets = -1;
 
+    // 初始化时间，提供了时间的缓存（通过全局变量）。时间分为有 time_resution 和事件循环中更新时间两种情况。目前的源码是事件循环更新时间。
+    // 定时调用时间并缓存起来
     ngx_time_init();
 
+    // 正则表达式初始化
 #if (NGX_PCRE)
     ngx_regex_init();
 #endif

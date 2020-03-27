@@ -45,7 +45,7 @@ struct ngx_pool_large_s {
     void                 *alloc;
 };
 
-
+// 管理 pool 分配的小块内存
 typedef struct {
     u_char               *last;
     u_char               *end;
@@ -53,12 +53,14 @@ typedef struct {
     ngx_uint_t            failed;
 } ngx_pool_data_t;
 
-
+// 内存池结构体
+// d 是核心成员, 它会链接到下一个pool用于在当前小内存不充足的情况下分内存。
+// 新的 ngx_pool 大小与本pool的大小一致
 struct ngx_pool_s {
     ngx_pool_data_t       d;
     size_t                max;
-    ngx_pool_t           *current;
-    ngx_chain_t          *chain;
+    ngx_pool_t           *current; // ngx_pool_t 即是 ngx_pool_s 的类型别名定义
+    ngx_chain_t          *chain;   // 用于 ngx_outout_chain, 与 内存池的关系不大。buf 形成的链表，但是 buf 的创建也会依赖内存池，有些奇怪？
     ngx_pool_large_t     *large;
     ngx_pool_cleanup_t   *cleanup;
     ngx_log_t            *log;
