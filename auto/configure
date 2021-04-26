@@ -7,7 +7,8 @@
 LC_ALL=C
 export LC_ALL
 
-# 初始化变量，定义了 CORE 的文件以及初始化的配置参数
+# 初始化变量，定义了 CORE 的文件以及初始化的配置参数. 
+# options 文件中定义的是从 ./configure --xx 读入的配置
 . auto/options
 . auto/init
 . auto/sources # 核心的nginx文件编译文件列表
@@ -20,10 +21,10 @@ test -d $NGX_OBJS || mkdir -p $NGX_OBJS
 echo > $NGX_AUTO_HEADERS_H
 echo > $NGX_AUTOCONF_ERR
 
-# NGX_CONFIGURE是 已经解析的所有 opt 选项
+# NGX_CONFIGURE是 已经解析的所有 opt 选项。例如： #define NGX_CONFIGURE " --with-mail"
 echo "#define NGX_CONFIGURE \"$NGX_CONFIGURE\"" > $NGX_AUTO_CONFIG_H
 
-
+# have 像是一个函数，用户开启某个变量，等到 #define NGX_DEBUG 1
 if [ $NGX_DEBUG = YES ]; then
     have=NGX_DEBUG . auto/have
 fi
